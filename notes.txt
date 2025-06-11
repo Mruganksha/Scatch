@@ -15,3 +15,7 @@ discount
 bgcolor
 panelcolor
 textcolor
+
+
+//Seperation of concerns: 
+a software design principle that aims to divide a program into distinct, independent sections or modules, each responsible for a specific aspect of functionality
