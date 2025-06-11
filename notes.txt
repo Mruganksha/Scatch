@@ -1,0 +1,17 @@
+usermodel:
+full name - string
+email - string
+password - string
+cart - array 
+isadmin - if yes he can even add products make changes, if not then only buy
+conatact - number
+picture - db
+
+product:
+image
+name
+price
+discount
+bgcolor
+panelcolor
+textcolor
