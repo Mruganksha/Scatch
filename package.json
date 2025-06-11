@@ -1,0 +1,27 @@
+{
+  "name": "scatch",
+  "version": "1.0.0",
+  "description": "A premium Bag Shop",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mruganksha/Scatch.git"
+  },
+  "author": "Mruganksha",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mruganksha/Scatch/issues"
+  },
+  "homepage": "https://github.com/Mruganksha/Scatch#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.15.1",
+    "multer": "^2.0.1"
+  }
+}
