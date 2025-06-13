@@ -19,3 +19,11 @@ textcolor
 
 //Seperation of concerns: 
 a software design principle that aims to divide a program into distinct, independent sections or modules, each responsible for a specific aspect of functionality
+
+
+/ -> signup or login
+/shop -> shop
+/users/cart -> cart
+/admin -> admin panel
+/owner/products -> show all products
+/owner/admin -> show admin panel to create products
