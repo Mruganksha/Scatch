@@ -1,6 +1,7 @@
 import React from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { Link } from "react-router-dom";
 
 function HomePage() {
   return (
@@ -15,23 +16,25 @@ function HomePage() {
           <p className="text-lg text-gray-600 max-w-xl mx-auto">
             Build, share, and explore content seamlessly. Join the community and make your mark.
           </p>
-          <div className="mt-10 flex justify-center gap-4">
-            <a
-              href="/register"
-              className="px-6 py-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition"
-            >
-              Get Started
-            </a>
+
+          <div className="mt-10 flex flex-wrap justify-center gap-4">
+            
             <a
               href="/login"
               className="px-6 py-3 border border-blue-500 text-blue-500 rounded-full hover:bg-blue-50 transition"
             >
               Login
             </a>
+            <Link
+              to="/shop"
+              className="px-6 py-3 bg-blue-500 text-white rounded-full hover:bg-green-600 transition"
+            >
+              Start Shopping
+            </Link>
           </div>
         </div>
 
-        {/* Optional: Add Features section */}
+        {/* Features section */}
         <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
           <div className="p-6 bg-white rounded-xl shadow text-center">
             <h3 className="text-xl font-semibold mb-2">Create Content</h3>

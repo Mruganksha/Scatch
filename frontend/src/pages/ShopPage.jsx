@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../store/cartSlice';
+import { Link } from 'react-router-dom'; 
 
-// ✅ Sample product data
+
+
+
 const mockProducts = [
   {
     id: 1,
@@ -83,6 +88,8 @@ function ShopPage() {
   const [sortBy, setSortBy] = useState('popular');
   const [filterAvailability, setFilterAvailability] = useState(false);
   const [filterDiscount, setFilterDiscount] = useState(false);
+  const dispatch = useDispatch();
+
 
   useEffect(() => {
     setProducts(mockProducts);
@@ -139,12 +146,7 @@ function ShopPage() {
             </select>
           </div>
 
-          {/* Links */}
-          <div className="flex flex-col space-y-2 text-gray-700">
-            <a href="#" className="hover:underline">New Collection</a>
-            <a href="#" className="hover:underline">All Products</a>
-            <a href="#" className="hover:underline">Discounted Products</a>
-          </div>
+        
 
           {/* Filters */}
           <div className="mt-10 space-y-2 text-gray-700">
@@ -168,40 +170,42 @@ function ShopPage() {
           </div>
         </div>
 
-        {/* Product Grid */}
-        <div className="w-[75%] grid grid-cols-3 gap-6">
-          {getFilteredSortedProducts().map((product) => (
-            <div key={product.id} className="w-full">
-              <div
-                className="w-full h-52 flex items-center justify-center rounded-md"
-                style={{ backgroundColor: product.bgcolor }}
-              >
-                <img
-                  className="h-40 object-contain"
-                  src={product.image}
-                  alt={product.name}
-                />
-              </div>
-              <div
-                className="flex justify-between items-center px-4 py-4 rounded-b-md"
-                style={{
-                  backgroundColor: product.panelcolor,
-                  color: product.textcolor,
-                }}
-              >
-                <div>
-                  <h3 className="font-medium">{product.name}</h3>
-                  <h4>₹ {product.price}</h4>
-                </div>
-                <button className="w-7 h-7 flex items-center justify-center rounded-full bg-white text-black">
-                  <i className="ri-add-line"></i>
-                </button>
-              </div>
+       {/* Product Grid */}
+<div className="w-[75%] grid grid-cols-3 gap-6">
+  {getFilteredSortedProducts().map((product) => (
+    <div key={product.id} className="w-full">
+      <Link to={`/product/${product.id}`} className="w-full block">
+        <div>
+          <div
+            className="w-full h-52 flex items-center justify-center rounded-md"
+            style={{ backgroundColor: product.bgcolor }}
+          >
+            <img
+              className="h-40 object-contain"
+              src={product.image}
+              alt={product.name}
+            />
+          </div>
+          <div
+            className="flex justify-between items-center px-4 py-4 rounded-b-md"
+            style={{
+              backgroundColor: product.panelcolor,
+              color: product.textcolor,
+            }}
+          >
+            <div>
+              <h3 className="font-medium">{product.name}</h3>
+              <h4>₹ {product.price}</h4>
             </div>
-          ))}
+          </div>
         </div>
+      </Link>
+    </div>
+  ))}
+</div>
       </div>
 
+      
       <Footer />
     </>
   );

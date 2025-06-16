@@ -2,6 +2,17 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import AuthPage from "./pages/AuthPage";
 import ShopPage from './pages/ShopPage'; 
+import CartPage from './pages/CartPage';
+import ProductDetailsPage from './pages/ProductDetailsPage';
+import CheckoutPage from './pages/CheckoutPage';
+import {
+  ContactPage,
+  FAQPage,
+  PrivacyPolicyPage,
+  TermsPage,
+} from './pages/StaticPages';
+
+
 
 function App() {
   return (
@@ -11,6 +22,13 @@ function App() {
         <Route path="/login" element={<AuthPage />} />
         <Route path="/register" element={<AuthPage />} />
         <Route path="/shop" element={<ShopPage />} />
+         <Route path="/cart" element={<CartPage />} />
+          <Route path="/product/:id" element={<ProductDetailsPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+<Route path="/faq" element={<FAQPage />} />
+<Route path="/privacy" element={<PrivacyPolicyPage />} />
+<Route path="/terms" element={<TermsPage />} />
       </Routes>
     </Router>
   );
