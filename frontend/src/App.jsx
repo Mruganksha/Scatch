@@ -5,6 +5,8 @@ import ShopPage from './pages/ShopPage';
 import CartPage from './pages/CartPage';
 import ProductDetailsPage from './pages/ProductDetailsPage';
 import CheckoutPage from './pages/CheckoutPage';
+import AccountPage from './pages/AccountsPage';
+import OrdersPage from './pages/OrdersPage';
 import {
   ContactPage,
   FAQPage,
@@ -29,6 +31,8 @@ function App() {
 <Route path="/faq" element={<FAQPage />} />
 <Route path="/privacy" element={<PrivacyPolicyPage />} />
 <Route path="/terms" element={<TermsPage />} />
+  <Route path="/account" element={<AccountPage />} />
+  <Route path="/orders" element={<OrdersPage />} />
       </Routes>
     </Router>
   );
