@@ -5,62 +5,19 @@ import Footer from "../components/Footer";
 import axios from "../api/axios";
 
 function AuthPage() {
-  const navigate = useNavigate(); // ✅ used for redirecting
-  const [error, setError] = useState("");
-  const [registerForm, setRegisterForm] = useState({
-    fullname: "",
-    email: "",
-    password: ""
-  });
-  const [loginForm, setLoginForm] = useState({
-    email: "",
-    password: ""
-  });
+  const [error, setError] = useState(""); // Simulate server-side error message
 
-  const handleRegister = async (e) => {
+  // These would be replaced by actual handlers and state later
+  const handleRegister = (e) => {
     e.preventDefault();
-    try {
-      console.log("📤 Sending registerForm:", registerForm);
-      await axios.post("/users/register", registerForm, {
-        headers: { "Content-Type": "application/json" },
-      });
-      alert("Registered successfully! Now login.");
-      setRegisterForm({ fullname: "", email: "", password: "" });
-      setError("");
-    } catch (err) {
-      console.error("❌ Registration error:", err.response?.data || err.message);
-      setError(err.response?.data?.message || "Registration failed.");
-    }
+    // Add registration logic here
+    setError("Registration failed. Try again."); // Example
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    try {
-      const res = await axios.post("/users/login", loginForm, {
-        headers: { "Content-Type": "application/json" },
-      });
-
-      const { token } = res.data;
-
-    if (token) {
-      localStorage.setItem("token", token); // ✅ Save JWT for future requests
-      localStorage.setItem("isLoggedIn", "true");
-    }
-
-
-      alert("Logged in successfully!");
-      
-        localStorage.setItem("isLoggedIn", "true");
-      // ✅ Clear error properly
-      setError("");
-      setLoginForm({ email: "", password: "" });
-
-      // ✅ Redirect to /shop
-      navigate("/shop");
-    } catch (err) {
-      console.error("❌ Login error:", err.response?.data || err.message);
-      setError(err.response?.data?.message || "Login failed. Check credentials.");
-    }
+    // Add login logic here
+    setError("Login failed. Check credentials."); // Example
   };
 
   return (
@@ -68,13 +25,13 @@ function AuthPage() {
       <Header />
 
       {error && (
-        <div className="absolute top-5 left-1/2 -translate-x-1/2 p-3 rounded-md bg-red-500 z-50">
-          <span className="inline-block mt-1 mb-1 text-white">{error}</span>
+        <div className="fixed top-5 left-1/2 -translate-x-1/2 p-3 rounded-md bg-red-500 z-50">
+          <span className="text-white">{error}</span>
         </div>
       )}
 
       <div className="w-full min-h-screen flex px-20">
-        {/* Registration Form */}
+        {/* Registration */}
         <div className="w-1/2 flex items-center justify-center">
           <div className="w-full px-20">
             <h3 className="text-4xl mb-1">
@@ -87,8 +44,6 @@ function AuthPage() {
                 type="text"
                 placeholder="Full Name"
                 name="fullname"
-                value={registerForm.fullname}
-                onChange={(e) => setRegisterForm({ ...registerForm, fullname: e.target.value })}
                 required
               />
               <input
@@ -96,8 +51,6 @@ function AuthPage() {
                 type="email"
                 placeholder="Email"
                 name="email"
-                value={registerForm.email}
-                onChange={(e) => setRegisterForm({ ...registerForm, email: e.target.value })}
                 required
               />
               <input
@@ -105,8 +58,6 @@ function AuthPage() {
                 type="password"
                 placeholder="Password"
                 name="password"
-                value={registerForm.password}
-                onChange={(e) => setRegisterForm({ ...registerForm, password: e.target.value })}
                 required
               />
               <button
@@ -119,7 +70,7 @@ function AuthPage() {
           </div>
         </div>
 
-        {/* Login Form */}
+        {/* Login */}
         <div className="w-1/2 flex items-center justify-center">
           <div className="w-full px-20">
             <h4 className="text-2xl capitalize mb-5">Login to your account</h4>
@@ -129,8 +80,6 @@ function AuthPage() {
                 type="email"
                 placeholder="Email"
                 name="email"
-                value={loginForm.email}
-                onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
                 required
               />
               <input
@@ -138,8 +87,6 @@ function AuthPage() {
                 type="password"
                 placeholder="Password"
                 name="password"
-                value={loginForm.password}
-                onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
                 required
               />
               <button
