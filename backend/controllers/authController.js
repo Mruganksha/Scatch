@@ -1,76 +1,59 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { generateToken } = require("../utils/generateToken");
-const userModel = require("../models/user-model");
+const { generateTokens } = require("../utils/generateTokens");
+const User = require("../models/user-model");
 
-module.exports.registerUser = async function (req, res) {
+const generateToken = (user) => {
+  return jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    expiresIn: "7d",
+  });
+};
+
+exports.registerUser = async (req, res) => {
   try {
-    const { email, password, fullname } = req.body;
+    console.log("🔔 Register request received:", req.body); // log request body
+    const { fullname, email, password } = req.body;
+    console.log("  parsed:", { fullname, email, password });
 
-    let user = await userModel.findOne({ email });
+    let user = await User.findOne({ email });
     if (user) {
-      return res.status(400).json({ message: "User already exists. Please login." });
+      console.log("❗ User already exists:", email);
+      return res.status(400).json({ message: "Email already exists" });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(password, salt);
+    user = new User({ fullname, email, password });
+    await user.save();
 
-    const newUser = await userModel.create({
-      email,
-      password: hash,
-      fullname,
-    });
+    const token = generateToken(user);
+    res.cookie("token", token, { httpOnly: true });
+    res.status(201).json({ message: "User registered", user: { email: user.email }, token, });
+    console.log("✅ Registration successful for:", email);
 
-    const token = generateToken(newUser);
-
-    res.status(201).json({
-      message: "User registered successfully",
-      user: {
-        id: newUser._id,
-        email: newUser.email,
-        fullname: newUser.fullname,
-      },
-      token,
-    });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ message: "Server error" });
+    console.error("❌ Registration failed:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
-module.exports.loginUser = async function (req, res) {
+
+
+exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await userModel.findOne({ email });
-
-    if (!user) {
-      return res.status(401).json({ message: "Invalid email or password" });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (!isMatch) {
-      return res.status(401).json({ message: "Invalid email or password" });
+    const user = await User.findOne({ email });
+    if (!user || !(await user.comparePassword(password))) {
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
     const token = generateToken(user);
-
-    res.status(200).json({
-      message: "Login successful",
-      user: {
-        id: user._id,
-        email: user.email,
-        fullname: user.fullname,
-      },
-      token,
-    });
+    res.cookie("token", token, { httpOnly: true });
+    res.status(200).json({ message: "Login successful", user: { email: user.email }, token, });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", err });
   }
 };
 
-module.exports.logout = function (req, res) {
-  // Frontend should handle logout by clearing localStorage
-  res.status(200).json({ message: "Logout successful" });
+exports.logout = (req, res) => {
+  res.clearCookie("token");
+  res.json({ message: "Logged out successfully" });
 };

@@ -21,6 +21,7 @@ router.get("/shop", isLoggedIn, async function(req, res){
   }
 })
 
+/*
 router.get("/addtocart/:productid", isLoggedIn, async function (req, res) {
   try {
     let user = await userModel.findOne({ email: req.user.email });
@@ -52,5 +53,5 @@ router.get("/logout", isLoggedIn, function (req, res) {
   req.flash("success", "Logged out successfully");
   res.redirect("/");
 });
-
+*/
 module.exports = router;

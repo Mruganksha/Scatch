@@ -10,7 +10,7 @@ const upload = require("../config/multer-config");
 router.get("/product/:id", productController.getProductById);
 
 // Get all products
-router.get("/", productController.getAllProducts);
+//router.get("/", productController.getAllProducts);
 
 // Create product (Admin only)
 router.post(
@@ -20,6 +20,7 @@ router.post(
   productController.createProduct
 );
 
+/*
 // Update product (Admin only)
 router.put(
   "/update/:id",
@@ -30,5 +31,5 @@ router.put(
 
 // Delete product (Admin only)
 router.delete("/delete/:id", isOwner, productController.deleteProduct);
-
+*/
 module.exports = router;
