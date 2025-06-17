@@ -1,11 +1,10 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { addToCart } from '../store/cartSlice';
 
-// Mock data (should eventually come from a server or Redux/global state)
 const mockProducts = [
   {
     id: 1,
@@ -25,14 +24,28 @@ const mockProducts = [
     isAvailable: false,
     hasDiscount: true,
   },
-  // Add the rest of your mock data here...
+  // Add more products here if needed...
 ];
 
 function ProductDetailsPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const product = mockProducts.find(p => p.id === parseInt(id));
+  const product = mockProducts.find((p) => p.id === parseInt(id));
+
+  const handleAddToCart = () => {
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+    if (!isLoggedIn) {
+      alert("Please login to add items to your cart.");
+      navigate("/login");
+      return;
+    }
+
+    dispatch(addToCart(product));
+    alert("Item added to cart!");
+  };
 
   if (!product) {
     return (
@@ -61,7 +74,7 @@ function ProductDetailsPage() {
           </p>
 
           <button
-            onClick={() => dispatch(addToCart(product))}
+            onClick={handleAddToCart}
             disabled={!product.isAvailable}
             className={`mt-4 px-6 py-2 rounded text-white ${
               product.isAvailable ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-400 cursor-not-allowed'

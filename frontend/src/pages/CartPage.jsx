@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { removeFromCart } from '../store/cartSlice';
+import { removeFromCart, incrementQuantity, decrementQuantity } from '../store/cartSlice';
 import { useNavigate } from 'react-router-dom'; // ✅ import
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -49,9 +49,22 @@ function CartPage() {
                     />
                     <div>
                       <h3 className="text-lg font-semibold text-gray-800">{item.name}</h3>
-                      <p className="text-sm text-gray-500">
-                        ₹ {item.price} × {item.quantity}
-                      </p>
+                      <div className="flex items-center gap-3 mt-2">
+  <button
+    onClick={() => dispatch(decrementQuantity(item.id))}
+    className="px-2 py-1 text-lg bg-gray-200 rounded hover:bg-gray-300"
+  >
+    -
+  </button>
+  <span className="text-md font-medium">{item.quantity}</span>
+  <button
+    onClick={() => dispatch(incrementQuantity(item.id))}
+    className="px-2 py-1 text-lg bg-gray-200 rounded hover:bg-gray-300"
+  >
+    +
+  </button>
+</div>
+
                     </div>
                   </div>
 

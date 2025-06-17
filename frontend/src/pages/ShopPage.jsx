@@ -4,6 +4,7 @@ import Footer from '../components/Footer';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../store/cartSlice';
 import { Link } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -123,6 +124,8 @@ function ShopPage() {
         return filtered; // popular (default order)
     }
   };
+  
+
 
   return (
     <>
