@@ -1,9 +1,63 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState, useRef } from "react";
+import axios from "axios";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 function AccountPage() {
+  const [user, setUser] = useState(null);
+  const [address, setAddress] = useState("");
+  const fileInputRef = useRef();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/users/profile", {
+          withCredentials: true,
+        });
+        setUser(res.data.user);
+        setAddress(res.data.user.address || "");
+      } catch (err) {
+        console.error("Error fetching user profile:", err);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  const handleImageClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+  const formData = new FormData();
+  formData.append("profileImage", file);
+
+    try {
+      const res = await axios.post("http://localhost:5000/api/users/upload-profile", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      });
+      console.log("Image uploaded:", res.data);
+      setUser((prev) => ({ ...prev, profileImage: res.data.profileImage }));
+    } catch (err) {
+      console.error("Upload failed:", err);
+    }
+  };
+
+  const handleAddressSave = async () => {
+    try {
+      const res = await axios.put(
+        "http://localhost:5000/api/users/update-address",
+        { address },
+        { withCredentials: true }
+      );
+      alert("Address updated successfully!");
+    } catch (err) {
+      console.error("Address update failed:", err);
+    }
+  };
+
   return (
     <>
       <Header />
@@ -12,30 +66,45 @@ function AccountPage() {
 
         {/* Profile Section */}
         <div className="flex items-center gap-6 mb-8">
-          <div className="w-24 h-24 rounded-full bg-gray-300 overflow-hidden">
-            {/* Replace with actual image source later */}
+          <div
+            className="w-24 h-24 rounded-full bg-gray-300 overflow-hidden cursor-pointer"
+            onClick={handleImageClick}
+          >
             <img
-              src="https://via.placeholder.com/150"
-              alt="Profile"
-              className="w-full h-full object-cover"
+               src={user?.profileImage ? "http://localhost:5000/api/users/profile-image" : "default.jpg"}
+  alt="Profile"
+  className="w-full h-full object-cover"
+            />
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleImageUpload}
+              hidden
+              accept="image/*"
             />
           </div>
           <div>
-            <h2 className="text-xl font-semibold">John Doe</h2>
-            <p className="text-gray-600">john@example.com</p>
-            {/* Optionally, an edit profile button */}
-            <button className="mt-2 text-sm text-blue-500 hover:underline">
-              Edit Profile
-            </button>
+            <h2 className="text-xl font-semibold">{user?.name}</h2>
+            <p className="text-gray-600">{user?.email}</p>
           </div>
         </div>
 
         {/* Info Sections */}
         <div className="space-y-6">
           <div className="p-6 bg-white shadow rounded-lg">
-            <h2 className="text-xl font-semibold mb-2">Addresses</h2>
-            <p>123 Main Street, City, Country</p>
-            {/* Add address edit/manage UI later */}
+            <h2 className="text-xl font-semibold mb-2">Address</h2>
+            <textarea
+              rows={3}
+              className="w-full p-2 border rounded mb-2"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              onClick={handleAddressSave}
+            >
+              Save Address
+            </button>
           </div>
 
           <div className="p-6 bg-white shadow rounded-lg">
@@ -48,12 +117,12 @@ function AccountPage() {
           <div className="p-6 bg-white shadow rounded-lg">
             <h2 className="text-xl font-semibold mb-2">Order History</h2>
             <p className="mb-2 text-gray-600">View your previous orders and track current ones.</p>
-            <Link
-              to="/orders"
+            <a
+              href="/orders"
               className="inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
             >
               Go to Orders
-            </Link>
+            </a>
           </div>
         </div>
       </div>

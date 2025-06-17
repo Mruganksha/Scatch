@@ -3,10 +3,14 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { Link } from 'react-router-dom'; 
+import { useDispatch } from 'react-redux';
+import { removeItemsFromCart } from '../store/cartSlice'; 
 
 function CheckoutPage() {
   const cartItems = useSelector((state) => state.cart.items);
   const user = useSelector((state) => state.auth?.user); // Safe access in case undefined
+  const dispatch = useDispatch();
 
   const [billingData, setBillingData] = useState({
     firstName: '',
@@ -19,6 +23,8 @@ function CheckoutPage() {
     state: '',
     zip: '',
   });
+
+  const [showModal, setShowModal] = useState(false);
 
   const totalAmount = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -69,8 +75,9 @@ function CheckoutPage() {
         Authorization: token
       }
     });
-
-    alert("Order placed successfully!");
+    const orderedIds = cartItems.map(item => item.id);
+dispatch(removeItemsFromCart(orderedIds));
+     setShowModal(true); 
   } catch (err) {
     console.error("Error placing order:", err);
     alert("Failed to place order.");
@@ -164,7 +171,22 @@ function CheckoutPage() {
           </div>
         </div>
       </div>
-
+      
+      {/* 🧊 Modal Section */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg w-[90%] max-w-md text-center">
+            <h2 className="text-2xl font-bold text-green-600 mb-4">🎉 Order Placed!</h2>
+            <p className="text-gray-700 mb-6">Your order is being processed. You can track it below.</p>
+            <Link
+              to="/orders"
+              className="inline-block bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
+            >
+              Track Your Order
+            </Link>
+          </div>
+        </div>
+      )}
       <Footer />
     </>
   );

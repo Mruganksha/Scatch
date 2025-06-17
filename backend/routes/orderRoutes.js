@@ -28,4 +28,19 @@ router.post('/order', authenticate, async (req, res) => {
   }
 });
 
+// GET: Get all orders for the logged-in user
+router.get('/order', authenticate, async (req, res) => {
+  try {
+    const userId = req.user.id || req.user._id;
+
+    const orders = await Order.find({ userId }).sort({ placedAt: -1 });
+
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error("Order fetch error:", error);
+    res.status(500).json({ success: false, message: "Failed to fetch orders" });
+  }
+});
+
+
 module.exports = router;

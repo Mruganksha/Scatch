@@ -5,8 +5,11 @@ const userSchema = mongoose.Schema({
      fullname: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  contact: Number,
-  picture: String,
+  profileImage: {
+    data: Buffer,
+    contentType: String,
+  },
+  address: String,
   isadmin: { type: Boolean, default: false },
 
   cart: [{
