@@ -37,7 +37,7 @@ export default function AdminProducts() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Products</h1>
         <Link
-          to="/admin/products/new"
+          to="/admin"
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
         >
           + Add Product
@@ -80,9 +80,13 @@ export default function AdminProducts() {
                 </td>
                 <td className="px-6 py-3">{product.category}</td>
                 <td className="px-6 py-3 text-center space-x-2">
-                  <button className="text-sm text-blue-500 hover:underline">
-                    Edit
-                  </button>
+                <Link
+  to={`/admin/products/edit/${product.id}`}
+  className="text-sm text-blue-500 hover:underline"
+>
+  Edit
+</Link>
+
                   <button className="text-sm text-red-500 hover:underline">
                     Delete
                   </button>

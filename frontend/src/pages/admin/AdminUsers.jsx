@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+
 
 const users = [
   {
@@ -61,9 +63,13 @@ export default function AdminUsers() {
                   </span>
                 </td>
                 <td className="px-6 py-3 text-center space-x-2">
-                  <button className="text-sm text-blue-500 hover:underline">
-                    Edit
-                  </button>
+                 <Link
+  to={`/admin/users/edit/${user.id}`}
+  className="text-sm text-blue-500 hover:underline"
+>
+  Edit
+</Link>
+
                   <button className="text-sm text-red-500 hover:underline">
                     Delete
                   </button>
