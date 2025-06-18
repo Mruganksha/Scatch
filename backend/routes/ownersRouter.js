@@ -1,45 +1,79 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const ownerModel = require("../models/owner-model");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken")
+const Owner = require("../models/owner-model");
+const verifyOwner = require("../middlewares/authOwner");
+const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret_key";
 
-const isOwner = require("../middlewares/isOwner");
-const upload = require("../config/multer-config");
-const productController = require("../controllers/productController");
+// Create admin account
+router.post("/register", async (req, res) => {
+  try {
+    const { fullname, email, password } = req.body;
 
-// Create initial owner (only in development mode)
-if (process.env.NODE_ENV === "development") {
-  router.post("/create", async function (req, res) {
-    let owners = await ownerModel.find();
-    if (owners.length > 0) {
-      return res
-        .status(503)
-        .send("You don't have permission to create a new owner.");
-    }
+    // Check if already exists
+    const existing = await Owner.findOne({ email });
+    if (existing) return res.status(400).json({ message: "Email already in use" });
 
-    let { fullname, email, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    let createdOwner = await ownerModel.create({
+    const owner = new Owner({
       fullname,
       email,
-      password,
+      password: hashedPassword,
     });
 
-    res.status(201).send(createdOwner);
-  });
-}
-
-// Admin Panel Page
-router.get("/admin", isOwner, function (req, res) {
-  let success = req.flash("success");
-  res.render("createproducts", { success });
+    await owner.save();
+    res.status(201).json({ message: "Owner registered successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Registration failed", error: err.message });
+  }
 });
 
-// Product Creation (Admin)
-router.post(
-  "/product/create",
-  isOwner,
-  upload.single("image"),
-  productController.createProduct
-);
+// Owner Login Route
+router.post("/login", async (req, res) => {
+  try {
+
+    const { email, password } = req.body;
+
+    const owner = await Owner.findOne({ email });
+     console.log("Owner found:", owner);
+console.log("Entered password:", password);
+console.log("Stored password:", owner?.password);
+    if (!owner) return res.status(400).json({ message: "Invalid credentials" });
+
+    const isMatch = await bcrypt.compare(password.trim(), owner.password.trim());
+console.log("Is password match:", isMatch);
+
+    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+
+    const token = jwt.sign({ id: owner._id, role: "admin" }, JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    res.status(200).json({
+      message: "Logged in successfully",
+      owner: {
+        id: owner._id,
+        fullname: owner.fullname,
+        email: owner.email,
+        role: "admin",
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+router.get("/me", verifyOwner, (req, res) => {
+  res.json(req.owner);
+});
 
 module.exports = router;

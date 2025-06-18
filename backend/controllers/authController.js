@@ -46,8 +46,21 @@ exports.loginUser = async (req, res) => {
     }
 
     const token = generateToken(user);
-    res.cookie("token", token, { httpOnly: true });
-    res.status(200).json({ message: "Login successful", user: { email: user.email }, token, });
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false, // Use true if deploying over HTTPS
+      sameSite: "Lax", // "None" if frontend/backend on different domains
+    });
+
+    res.status(200).json({
+      message: "Login successful",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
   } catch (err) {
     res.status(500).json({ message: "Server error", err });
   }

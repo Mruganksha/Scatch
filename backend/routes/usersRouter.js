@@ -89,5 +89,54 @@ router.put("/update-address", authMiddleware, async (req, res) => {
   }
 });
 
+// Get all users (admin only)
+router.get("/", authMiddleware, async (req, res) => {
+  try {
+    const users = await User.find().select("-password");
+    res.status(200).json(users);
+  } catch (err) {
+    console.error("Fetch users error:", err);
+    res.status(500).json({ message: "Failed to fetch users" });
+  }
+});
+
+
+router.delete("/:id", authMiddleware, async (req, res) => {
+  try {
+    const currentUser = await User.findById(req.user.id);
+    if (currentUser.role !== "admin") {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    await User.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "User deleted" });
+  } catch (err) {
+    console.error("User delete error:", err.message);
+    res.status(500).json({ message: "Failed to delete user" });
+  }
+});
+
+// PUT /api/users/:id - update user
+router.put("/users/:id", async (req, res) => {
+  try {
+    const { name, email, role, status } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      { name, email, role, status },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ message: "User updated", user: updatedUser });
+  } catch (err) {
+    console.error("Update error:", err.message);
+    res.status(500).json({ message: "Update failed" });
+  }
+});
+
 
 module.exports = router;

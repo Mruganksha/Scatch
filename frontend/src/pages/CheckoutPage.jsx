@@ -71,6 +71,7 @@ function CheckoutPage() {
 
     const response = await axios.post("http://localhost:5000/api/order", orderData, {
       headers: {
+        withCredentials: true,
         "Content-Type": "application/json",
         Authorization: token
       }

@@ -3,86 +3,8 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../store/cartSlice';
-import { Link } from 'react-router-dom'; 
-import { useNavigate } from 'react-router-dom';
-
-
-
-
-const mockProducts = [
-  {
-    id: 1,
-    name: 'Modern Chair',
-    price: 1200,
-    image: 'https://via.placeholder.com/150',
-    bgcolor: '#FDE68A',
-    panelcolor: '#1E293B',
-    textcolor: '#FFFFFF',
-    isAvailable: true,
-    hasDiscount: false,
-    dateAdded: '2024-06-01',
-  },
-  {
-    id: 2,
-    name: 'Wooden Table',
-    price: 2200,
-    image: 'https://via.placeholder.com/150',
-    bgcolor: '#E0F2FE',
-    panelcolor: '#334155',
-    textcolor: '#FFFFFF',
-    isAvailable: false,
-    hasDiscount: true,
-    dateAdded: '2024-06-12',
-  },
-  {
-    id: 3,
-    name: 'Desk Lamp',
-    price: 500,
-    image: 'https://via.placeholder.com/150',
-    bgcolor: '#FEE2E2',
-    panelcolor: '#1F2937',
-    textcolor: '#FFFFFF',
-    isAvailable: true,
-    hasDiscount: true,
-    dateAdded: '2024-05-22',
-  },
-  {
-    id: 4,
-    name: 'Office Sofa',
-    price: 4800,
-    image: 'https://www.pexels.com/photo/photo-of-white-couch-on-wooden-floor-3757055/',
-    bgcolor: '#E0F7FA',
-    panelcolor: '#263238',
-    textcolor: '#FFFFFF',
-    isAvailable: true,
-    hasDiscount: false,
-    dateAdded: '2024-04-10',
-  },
-  {
-    id: 5,
-    name: 'Minimal Shelf',
-    price: 1400,
-    image: 'https://via.placeholder.com/150',
-    bgcolor: '#FFF3E0',
-    panelcolor: '#3E2723',
-    textcolor: '#FFFFFF',
-    isAvailable: false,
-    hasDiscount: false,
-    dateAdded: '2024-06-10',
-  },
-  {
-    id: 6,
-    name: 'Bean Bag',
-    price: 900,
-    image: 'https://via.placeholder.com/150',
-    bgcolor: '#E8F5E9',
-    panelcolor: '#1B5E20',
-    textcolor: '#FFFFFF',
-    isAvailable: true,
-    hasDiscount: true,
-    dateAdded: '2024-06-13',
-  },
-];
+import { Link } from 'react-router-dom';
+import axios from '../api/axios';
 
 function ShopPage() {
   const [products, setProducts] = useState([]);
@@ -91,9 +13,29 @@ function ShopPage() {
   const [filterDiscount, setFilterDiscount] = useState(false);
   const dispatch = useDispatch();
 
-
   useEffect(() => {
-    setProducts(mockProducts);
+    const fetchProducts = async () => {
+      try {
+        const res = await axios.get('/products');
+        const formatted = res.data.map((p) => ({
+          id: p._id,
+          name: p.name,
+          price: p.price,
+          image: p.image,
+          bgcolor: '#FDE68A',
+          panelcolor: '#1E293B',
+          textcolor: '#FFFFFF',
+          isAvailable: true, // You can update this based on real data
+          hasDiscount: false, // You can update this too
+          dateAdded: p.createdAt || '2024-06-01',
+        }));
+        setProducts(formatted);
+      } catch (err) {
+        console.error('Failed to fetch products', err);
+      }
+    };
+
+    fetchProducts();
   }, []);
 
   const handleSortChange = (e) => {
@@ -121,11 +63,9 @@ function ShopPage() {
       case 'high-to-low':
         return filtered.sort((a, b) => b.price - a.price);
       default:
-        return filtered; // popular (default order)
+        return filtered;
     }
   };
-  
-
 
   return (
     <>
@@ -149,8 +89,6 @@ function ShopPage() {
             </select>
           </div>
 
-        
-
           {/* Filters */}
           <div className="mt-10 space-y-2 text-gray-700">
             <h4 className="font-semibold">Filter by:</h4>
@@ -173,42 +111,45 @@ function ShopPage() {
           </div>
         </div>
 
-       {/* Product Grid */}
-<div className="w-[75%] grid grid-cols-3 gap-6">
-  {getFilteredSortedProducts().map((product) => (
-    <div key={product.id} className="w-full">
-      <Link to={`/product/${product.id}`} className="w-full block">
-        <div>
-          <div
-            className="w-full h-52 flex items-center justify-center rounded-md"
-            style={{ backgroundColor: product.bgcolor }}
-          >
-            <img
-              className="h-40 object-contain"
-              src={product.image}
-              alt={product.name}
-            />
-          </div>
-          <div
-            className="flex justify-between items-center px-4 py-4 rounded-b-md"
-            style={{
-              backgroundColor: product.panelcolor,
-              color: product.textcolor,
-            }}
-          >
-            <div>
-              <h3 className="font-medium">{product.name}</h3>
-              <h4>₹ {product.price}</h4>
+        {/* Product Grid */}
+        <div className="w-[75%] grid grid-cols-3 gap-6">
+          {getFilteredSortedProducts().map((product) => (
+            <div key={product.id} className="w-full">
+              <Link to={`/product/${product.id}`} className="w-full block">
+                <div>
+                  <div
+                    className="w-full h-52 flex overflow-hidden rounded-md"
+                    style={{ backgroundColor: product.bgcolor }}
+                  >
+                    <img
+                      className="w-full h-full object-cover"
+                       src={
+    product.image
+      ? `data:image/jpeg;base64,${product.image}`
+      : "https://via.placeholder.com/150"
+  }
+                      alt={product.name}
+                    />
+                  </div>
+                  <div
+                    className="flex justify-between items-center px-4 py-4 rounded-b-md"
+                    style={{
+                      backgroundColor: product.panelcolor,
+                      color: product.textcolor,
+                    }}
+                  >
+                    <div>
+                      <h3 className="font-medium">{product.name}</h3>
+                      <h4>₹ {product.price}</h4>
+                    </div>
+                  </div>
+                </div>
+              </Link>
             </div>
-          </div>
+          ))}
         </div>
-      </Link>
-    </div>
-  ))}
-</div>
       </div>
 
-      
       <Footer />
     </>
   );

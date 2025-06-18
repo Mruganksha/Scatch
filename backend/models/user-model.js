@@ -11,7 +11,11 @@ const userSchema = mongoose.Schema({
   },
   address: String,
   isadmin: { type: Boolean, default: false },
-
+  status: {
+    type: String,
+    enum: ["active", "banned"],
+    default: "active", // Set default value
+  },
   cart: [{
     product: {
       type: mongoose.Schema.Types.ObjectId,

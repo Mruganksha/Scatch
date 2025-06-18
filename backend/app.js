@@ -14,6 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+
 // CORS for React frontend
 app.use(
   cors({
@@ -31,3 +32,12 @@ app.use("/api/users", usersRouter);
 
 const orderRoutes = require('./routes/orderRoutes');
 app.use('/api', orderRoutes);
+
+const ownerRouter = require("./routes/ownersRouter");
+app.use("/api/owners", ownerRouter);
+
+const productRoutes = require('./routes/productsRouter');
+app.use('/api/products', productRoutes);
+
+const adminUserRoutes = require("./routes/adminUserRoutes");
+app.use("/api", adminUserRoutes);

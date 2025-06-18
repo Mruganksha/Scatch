@@ -43,7 +43,13 @@ function CartPage() {
                 >
                   <div className="flex items-center gap-4">
                     <img
-                      src={item.image}
+                      src={
+    item.image?.data
+      ? `data:image/jpeg;base64,${btoa(
+          String.fromCharCode(...new Uint8Array(item.image.data))
+        )}`
+      : item.image // fallback if it's a direct URL string
+  }
                       alt={item.name}
                       className="w-24 h-24 object-contain rounded-lg bg-gray-100"
                     />

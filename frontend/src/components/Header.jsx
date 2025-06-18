@@ -15,6 +15,7 @@ function Header() {
 
       {/* Desktop Menu */}
       <nav className="hidden md:flex items-center gap-6 text-sm">
+        <Link to="/shop" className="text-gray-600 hover:text-blue-500">Shop</Link>
         <Link to="/contact" className="text-gray-600 hover:text-blue-500">Contact</Link>
         <Link to="/faq" className="text-gray-600 hover:text-blue-500">FAQ</Link>
         <Link to="/privacy" className="text-gray-600 hover:text-blue-500">Privacy</Link>
@@ -42,6 +43,7 @@ function Header() {
       {/* Mobile Dropdown */}
       {menuOpen && (
         <div className="absolute top-20 left-0 w-full bg-white shadow-md z-50 flex flex-col px-6 py-4 space-y-4 md:hidden">
+          <Link to="/shop" className="text-gray-600 hover:text-blue-500">Shop</Link>
           <Link to="/contact" className="text-gray-600 hover:text-blue-500">Contact</Link>
           <Link to="/faq" className="text-gray-600 hover:text-blue-500">FAQ</Link>
           <Link to="/privacy" className="text-gray-600 hover:text-blue-500">Privacy</Link>

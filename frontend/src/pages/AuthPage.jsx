@@ -34,34 +34,44 @@ function AuthPage() {
   };
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post("/users/login", loginForm, {
+  e.preventDefault();
+  try {
+    const isAdmin = loginForm.email === "admin@example.com"; // You can improve this logic later
+    const endpoint = isAdmin ? "/owners/login" : "/users/login";
+
+    const res = await axios.post(
+      endpoint,
+      loginForm,
+      {
         headers: { "Content-Type": "application/json" },
-      });
+        withCredentials: true,
+      }
+    );
 
-      const { token } = res.data;
-
-    if (token) {
-      localStorage.setItem("token", token); // ✅ Save JWT for future requests
-      localStorage.setItem("isLoggedIn", "true");
-    }
-
-
+    if (isAdmin) {
+      alert("Admin logged in successfully!");
+      navigate("/admin"); // Admin dashboard
+    } else {
       alert("Logged in successfully!");
-      
-        localStorage.setItem("isLoggedIn", "true");
-      // ✅ Clear error properly
-      setError("");
-      setLoginForm({ email: "", password: "" });
-
-      // ✅ Redirect to /shop
-      navigate("/shop");
-    } catch (err) {
-      console.error("❌ Login error:", err.response?.data || err.message);
-      setError(err.response?.data?.message || "Login failed. Check credentials.");
+      navigate("/shop"); // Regular user route
     }
-  };
+
+    // Optionally store token or role
+    const { token, owner} = res.data;
+    if (token) {
+  localStorage.setItem("token", token);     // ✅ Save JWT
+  localStorage.setItem("isLoggedIn", "true");
+  localStorage.setItem("role", owner.role); // ✅ Save role
+}
+
+    setLoginForm({ email: "", password: "" });
+    setError("");
+  } catch (err) {
+    console.error("❌ Login error:", err.response?.data || err.message);
+    setError(err.response?.data?.message || "Login failed. Check credentials.");
+  }
+};
+
 
   return (
     <>
@@ -142,6 +152,10 @@ function AuthPage() {
                 onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
                 required
               />
+              {loginForm.email === "admin@example.com" && (
+  <p className="text-sm text-blue-500 mb-2">Logging in as <strong>Admin</strong></p>
+)}
+
               <button
                 type="submit"
                 className="px-5 block rounded-full py-3 mt-2 bg-blue-500 text-white w-full"

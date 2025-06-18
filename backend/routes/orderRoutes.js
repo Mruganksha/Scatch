@@ -42,5 +42,50 @@ router.get('/order', authenticate, async (req, res) => {
   }
 });
 
+// GET: Get all orders (Admin only)
+router.get('/admin/orders', authenticate, async (req, res) => {
+  try {
+    // Optional: add role check for admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+
+    const orders = await Order.find()
+      .sort({ placedAt: -1 })
+      .populate('userId', 'fullname email'); // only pull what’s needed
+
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error("Admin order fetch error:", error);
+    res.status(500).json({ success: false, message: "Failed to fetch orders" });
+  }
+});
+
+// PATCH: Update order status (Admin only)
+router.patch('/admin/orders/:id/status', authenticate, async (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Access denied' });
+  }
+
+  const { status } = req.body;
+
+  try {
+    const order = await Order.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    res.status(200).json({ message: 'Status updated', order });
+  } catch (err) {
+    console.error("Update status error:", err);
+    res.status(500).json({ message: 'Failed to update status' });
+  }
+});
+
 
 module.exports = router;
