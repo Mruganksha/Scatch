@@ -14,7 +14,7 @@ import AdminUsers from "./pages/admin/AdminUsers";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminEditProduct from "./pages/admin/AdminEditProduct";
 import AdminEditUser from "./pages/admin/AdminEditUser";
-import ProtectedRoute from "./components/auth/ProtectRoute";
+//import ProtectedRoute from "./components/auth/ProtectRoute";
 
 
 import {
@@ -47,9 +47,11 @@ function App() {
         <Route
           path="/admin"
           element={
+            <AdminLayout />
+            /*
             <ProtectedRoute>
               <AdminLayout />
-            </ProtectedRoute>
+            </ProtectedRoute> */
           }
         >
           <Route index element={<AdminDashboard />} />

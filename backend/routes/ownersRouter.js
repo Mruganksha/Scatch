@@ -47,10 +47,9 @@ console.log("Is password match:", isMatch);
 
     if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign({ id: owner._id, role: "admin" }, JWT_SECRET, {
-      expiresIn: "7d",
+    const token = jwt.sign({ id: owner._id, role: owner.role }, JWT_SECRET, {
+      expiresIn: "1h",
     });
-
     res.cookie("token", token, {
       httpOnly: true,
       secure: false,

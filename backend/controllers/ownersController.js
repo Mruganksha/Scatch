@@ -37,9 +37,20 @@ module.exports.loginOwner = async (req, res) => {
     if (!match) return res.status(401).json({ message: "Invalid credentials" });
 
     const token = generateToken(owner);
-    res.status(200).json({ message: "Login successful", token });
+
+    res.status(200).json({
+      message: "Login successful",
+      token,  // ✅ Token needed for localStorage
+      owner: {
+        id: owner._id,
+        fullname: owner.fullname,
+        email: owner.email,
+        role: "admin"  // ✅ Very important for checking access
+      }
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ message: "Server error" });
   }
 };
+

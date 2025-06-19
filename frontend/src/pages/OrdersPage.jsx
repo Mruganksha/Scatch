@@ -10,9 +10,9 @@ function OrdersPage() {
   const fetchOrders = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:5000/api/order", {
+      const res = await axios.get("http://localhost:5000/api/order/order", {
         headers: {
-          Authorization: token
+          Authorization: `Bearer ${token}`,
         }
       });
       setOrders(res.data);

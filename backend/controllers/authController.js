@@ -4,7 +4,7 @@ const { generateTokens } = require("../utils/generateTokens");
 const User = require("../models/user-model");
 
 const generateToken = (user) => {
-  return jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+  return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
 };
@@ -41,22 +41,26 @@ exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
+
     if (!user || !(await user.comparePassword(password))) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
     const token = generateToken(user);
+
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false, // Use true if deploying over HTTPS
-      sameSite: "Lax", // "None" if frontend/backend on different domains
+      secure: false, // true in production with HTTPS
+      sameSite: "Lax",
     });
 
+    // ✅ Add `token` in response JSON here!
     res.status(200).json({
       message: "Login successful",
+      token,  // <-- THIS was missing
       user: {
         id: user._id,
-        name: user.name,
+        fullname: user.fullname,
         email: user.email,
         role: user.role,
       },
@@ -65,6 +69,7 @@ exports.loginUser = async (req, res) => {
     res.status(500).json({ message: "Server error", err });
   }
 };
+
 
 exports.logout = (req, res) => {
   res.clearCookie("token");

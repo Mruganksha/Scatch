@@ -74,14 +74,14 @@ router.delete("api/users/:id", verifyOwner, async (req, res) => {
   }
 });
 
-router.get("/admin/stats", authenticate, async (req, res) => {
+router.get("/admin/stats",  async (req, res) => {
   try {
-    if (req.user.role !== "admin") {
-      return res.status(403).json({ message: "Access denied" });
-    }
+    
 
     const totalUsers = await User.countDocuments();
     const totalOrders = await Order.countDocuments();
+    console.log(totalOrders);
+    console.log(totalUsers)
     const totalRevenueAgg = await Order.aggregate([
       { $group: { _id: null, total: { $sum: "$total" } } },
     ]);

@@ -6,17 +6,23 @@ export default function AdminOrders() {
   const [expandedOrder, setExpandedOrder] = useState(null);
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const res = await axios.get("/admin/orders", { withCredentials: true });
-        setOrders(res.data);
-      } catch (err) {
-        console.error("Error fetching orders:", err);
-      }
-    };
+  const fetchOrders = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get("http://localhost:5000/api/order/admin/orders", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setOrders(res.data);
+    } catch (err) {
+      console.error("Admin order fetch failed:", err.response?.data || err.message);
+    }
+  };
 
-    fetchOrders();
-  }, []);
+  fetchOrders();
+}, []);
+
 
   const toggleExpand = (orderId) => {
     setExpandedOrder(expandedOrder === orderId ? null : orderId);
@@ -67,10 +73,15 @@ export default function AdminOrders() {
     const newStatus = e.target.value;
     try {
       await axios.patch(
-        `/admin/orders/${order._id}/status`,
-        { status: newStatus },
-        { withCredentials: true }
-      );
+  `http://localhost:5000/api/order/admin/orders/${order._id}/status`,
+  { status: newStatus },
+  {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`
+    }
+  }
+);
+
 
       // Update the state to reflect the change
       setOrders((prev) =>

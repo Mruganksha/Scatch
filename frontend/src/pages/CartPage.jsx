@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { removeFromCart, incrementQuantity, decrementQuantity } from '../store/cartSlice';
+import { removeFromCart, incrementQuantity, decrementQuantity , } from '../store/cartSlice';
 import { useNavigate } from 'react-router-dom'; // ✅ import
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -44,11 +44,11 @@ function CartPage() {
                   <div className="flex items-center gap-4">
                     <img
                       src={
-    item.image?.data
-      ? `data:image/jpeg;base64,${btoa(
-          String.fromCharCode(...new Uint8Array(item.image.data))
-        )}`
-      : item.image // fallback if it's a direct URL string
+     item.image?.data
+    ? `data:image/jpeg;base64,${btoa(
+        String.fromCharCode(...new Uint8Array(item.image.data))
+      )}`
+    : item.image
   }
                       alt={item.name}
                       className="w-24 h-24 object-contain rounded-lg bg-gray-100"

@@ -7,13 +7,19 @@ function AccountPage() {
   const [user, setUser] = useState(null);
   const [address, setAddress] = useState("");
   const fileInputRef = useRef();
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
+        const token = localStorage.getItem("token");
         const res = await axios.get("http://localhost:5000/api/users/profile", {
-          withCredentials: true,
-        });
+  headers: {
+    Authorization: `Bearer ${token}`
+  },
+  withCredentials: true
+});
+
         setUser(res.data.user);
         setAddress(res.data.user.address || "");
       } catch (err) {
@@ -35,9 +41,13 @@ function AccountPage() {
 
     try {
       const res = await axios.post("http://localhost:5000/api/users/upload-profile", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-        withCredentials: true,
-      });
+  headers: {
+    "Content-Type": "multipart/form-data",
+    Authorization: `Bearer ${token}`
+  },
+  withCredentials: true
+});
+
       console.log("Image uploaded:", res.data);
       setUser((prev) => ({ ...prev, profileImage: res.data.profileImage }));
     } catch (err) {
@@ -48,10 +58,16 @@ function AccountPage() {
   const handleAddressSave = async () => {
     try {
       const res = await axios.put(
-        "http://localhost:5000/api/users/update-address",
-        { address },
-        { withCredentials: true }
-      );
+  "http://localhost:5000/api/users/update-address",
+  { address },
+  {
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    withCredentials: true
+  }
+);
+
       alert("Address updated successfully!");
     } catch (err) {
       console.error("Address update failed:", err);
@@ -71,10 +87,11 @@ function AccountPage() {
             onClick={handleImageClick}
           >
             <img
-               src={user?.profileImage ? "http://localhost:5000/api/users/profile-image" : "default.jpg"}
+  src={user?.profileImage ? `http://localhost:5000/${user.profileImage}` : "default.jpg"}
   alt="Profile"
   className="w-full h-full object-cover"
-            />
+/>
+
             <input
               type="file"
               ref={fileInputRef}

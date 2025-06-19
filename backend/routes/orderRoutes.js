@@ -5,67 +5,78 @@ const isLogin = require('../middlewares/isLoggedIn');
 const authenticate = require("../middlewares/authMiddleware");
 
 router.post('/order', authenticate, async (req, res) => {
-    console.log("✅ Reached order route");
-  console.log("User from token:", req.user);
   try {
-    const { billingDetails, location, items, total } = req.body;
-    const userId = req.user._id; // ✅ from your isloggin.js
+    console.log("✅ Reached order route");
+    const user = req.user;
+    console.log("User from token:", user);
 
-    const order = await Order.create({
-      userId: req.user.id,
-      billingDetails,
-      location,
-      items,
-      total,
-      placedAt: new Date(),
+    const transformedItems = req.body.items.map((item) => {
+      let base64Image = "";
+      if (item.image && item.image.data) {
+        base64Image = Buffer.from(item.image.data).toString("base64");
+      }
+      return {
+        ...item,
+        image: base64Image,
+      };
     });
-    await order.save();
-      console.log("Received user from token:", req.user);
-    res.status(201).json({ message: "Order placed", success: true, order: order });
-  } catch (error) {
-    console.error('Order error:', error);
-    res.status(500).json({ success: false, message: 'Failed to place order' });
+
+    // ✅ Calculate total
+    const total = transformedItems.reduce((sum, item) => {
+      return sum + (item.price || 0);
+    }, 0);
+
+    const newOrder = new Order({
+      userId: user.id,
+      items: transformedItems,
+      total, // ✅ include total
+    });
+
+    await newOrder.save();
+    res.status(201).json({ success: true, order: newOrder });
+  } catch (err) {
+    console.error("Order error:", err);
+    res.status(500).json({ success: false, message: "Order creation failed", error: err.message });
   }
 });
 
-// GET: Get all orders for the logged-in user
+
+// GET: Get orders for logged-in user
 router.get('/order', authenticate, async (req, res) => {
   try {
-    const userId = req.user.id || req.user._id;
-
+    const userId = req.user.id;
     const orders = await Order.find({ userId }).sort({ placedAt: -1 });
-
     res.status(200).json(orders);
   } catch (error) {
-    console.error("Order fetch error:", error);
-    res.status(500).json({ success: false, message: "Failed to fetch orders" });
+    console.error("User order fetch error:", error);
+    res.status(500).json({ success: false, message: "Failed to fetch user orders" });
   }
 });
+
 
 // GET: Get all orders (Admin only)
 router.get('/admin/orders', authenticate, async (req, res) => {
-  try {
-    // Optional: add role check for admin
-    if (req.user.role !== 'admin') {
-      return res.status(403).json({ message: 'Access denied' });
-    }
+  console.log("User role:", req.user);
+  /*
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Access denied' });
+  }*/
 
+  try {
     const orders = await Order.find()
       .sort({ placedAt: -1 })
-      .populate('userId', 'fullname email'); // only pull what’s needed
-
+      .populate('userId', 'fullname email'); // to fetch customer name/email
     res.status(200).json(orders);
-  } catch (error) {
-    console.error("Admin order fetch error:", error);
-    res.status(500).json({ success: false, message: "Failed to fetch orders" });
+  } catch (err) {
+    console.error("Admin order fetch error:", err);
+    res.status(500).json({ message: "Failed to fetch orders" });
   }
 });
 
+
 // PATCH: Update order status (Admin only)
 router.patch('/admin/orders/:id/status', authenticate, async (req, res) => {
-  if (req.user.role !== 'admin') {
-    return res.status(403).json({ message: 'Access denied' });
-  }
+  
 
   const { status } = req.body;
 

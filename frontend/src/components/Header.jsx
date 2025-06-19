@@ -1,17 +1,25 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 function Header() {
   const cartItems = useSelector((state) => state.cart.items);
   const count = cartItems.reduce((sum, i) => sum + i.quantity, 0);
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("isLoggedIn");
+    navigate("/login");
+  };
 
   return (
     <header className="w-full px-6 md:px-10 py-5 bg-white shadow-md flex justify-between items-center">
-      <Link to="/" className="text-2xl font-bold text-blue-500">
-        Scatch
-      </Link>
+      <Link to="/" className="text-2xl font-bold text-blue-500">Scatch</Link>
 
       {/* Desktop Menu */}
       <nav className="hidden md:flex items-center gap-6 text-sm">
@@ -20,9 +28,16 @@ function Header() {
         <Link to="/faq" className="text-gray-600 hover:text-blue-500">FAQ</Link>
         <Link to="/privacy" className="text-gray-600 hover:text-blue-500">Privacy</Link>
         <Link to="/terms" className="text-gray-600 hover:text-blue-500">Terms</Link>
-        <Link to="/account" className="text-sm font-medium text-gray-700 hover:underline">Account</Link>
-        <Link to="/orders" className="text-sm font-medium text-gray-700 hover:underline">Orders</Link>
-        <Link to="/login" className="text-gray-600 hover:text-blue-500">Login/Register</Link>
+        {isLoggedIn && (
+          <>
+            <Link to="/account" className="text-sm font-medium text-gray-700 hover:underline">Account</Link>
+            <Link to="/orders" className="text-sm font-medium text-gray-700 hover:underline">Orders</Link>
+            <button onClick={handleLogout} className="text-gray-600 hover:text-red-500">Logout</button>
+          </>
+        )}
+        {!isLoggedIn && (
+          <Link to="/login" className="text-gray-600 hover:text-blue-500">Login/Register</Link>
+        )}
         <Link to="/cart" className="relative text-gray-600 hover:text-blue-500">
           <i className="ri-shopping-cart-line text-2xl"></i>
           {count > 0 && (
@@ -48,9 +63,16 @@ function Header() {
           <Link to="/faq" className="text-gray-600 hover:text-blue-500">FAQ</Link>
           <Link to="/privacy" className="text-gray-600 hover:text-blue-500">Privacy</Link>
           <Link to="/terms" className="text-gray-600 hover:text-blue-500">Terms</Link>
-          <Link to="/account" className="text-sm font-medium text-gray-700 hover:underline">Account</Link>
-          <Link to="/orders" className="text-sm font-medium text-gray-700 hover:underline">Orders</Link>
-          <Link to="/login" className="text-gray-600 hover:text-blue-500">Login/Register</Link>
+          {isLoggedIn && (
+            <>
+              <Link to="/account" className="text-sm font-medium text-gray-700 hover:underline">Account</Link>
+              <Link to="/orders" className="text-sm font-medium text-gray-700 hover:underline">Orders</Link>
+              <button onClick={handleLogout} className="text-gray-600 hover:text-red-500 text-left">Logout</button>
+            </>
+          )}
+          {!isLoggedIn && (
+            <Link to="/login" className="text-gray-600 hover:text-blue-500">Login/Register</Link>
+          )}
           <Link to="/cart" className="relative text-gray-600 hover:text-blue-500">
             <i className="ri-shopping-cart-line text-2xl"></i>
             {count > 0 && (

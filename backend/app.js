@@ -10,8 +10,10 @@ const cors = require("cors");
 require("./config/mongoose-connection");
 
 // Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 app.use(cookieParser());
 
 
@@ -30,8 +32,8 @@ app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 const usersRouter = require("./routes/usersRouter");
 app.use("/api/users", usersRouter);
 
-const orderRoutes = require('./routes/orderRoutes');
-app.use('/api', orderRoutes);
+app.use('/api/order', require('./routes/orderRoutes'));
+
 
 const ownerRouter = require("./routes/ownersRouter");
 app.use("/api/owners", ownerRouter);

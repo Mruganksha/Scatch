@@ -36,7 +36,7 @@ function AuthPage() {
   const handleLogin = async (e) => {
   e.preventDefault();
   try {
-    const isAdmin = loginForm.email === "admin@example.com"; // You can improve this logic later
+    const isAdmin = loginForm.email === "admin@example.com"; // You can improve this later
     const endpoint = isAdmin ? "/owners/login" : "/users/login";
 
     const res = await axios.post(
@@ -48,21 +48,25 @@ function AuthPage() {
       }
     );
 
-    if (isAdmin) {
-      alert("Admin logged in successfully!");
-      navigate("/admin"); // Admin dashboard
-    } else {
-      alert("Logged in successfully!");
-      navigate("/shop"); // Regular user route
+    // ✅ Save token and role
+    const { token, owner, user } = res.data;
+
+    if (token) {
+      localStorage.setItem("token", token);
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("role", isAdmin ? "owner" : "user"); // ✅ Correctly set role
     }
 
-    // Optionally store token or role
-    const { token, owner} = res.data;
-    if (token) {
-  localStorage.setItem("token", token);     // ✅ Save JWT
-  localStorage.setItem("isLoggedIn", "true");
-  localStorage.setItem("role", owner.role); // ✅ Save role
-}
+    if (isAdmin) {
+      alert("Admin logged in successfully!");
+      navigate("/admin");
+    } else {
+      alert("Logged in successfully!");
+      navigate("/shop");
+    }
+    console.log("Saved token:", localStorage.getItem("token"));
+console.log("Role:", localStorage.getItem("role"));
+
 
     setLoginForm({ email: "", password: "" });
     setError("");
@@ -71,6 +75,7 @@ function AuthPage() {
     setError(err.response?.data?.message || "Login failed. Check credentials.");
   }
 };
+
 
 
   return (

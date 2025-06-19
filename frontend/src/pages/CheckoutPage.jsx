@@ -69,11 +69,11 @@ function CheckoutPage() {
     };
     console.log("Token:", token);
 
-    const response = await axios.post("http://localhost:5000/api/order", orderData, {
+    const response = await axios.post("http://localhost:5000/api/order/order", orderData, {
+      withCredentials: true,
       headers: {
-        withCredentials: true,
         "Content-Type": "application/json",
-        Authorization: token
+        Authorization: `Bearer ${token}`
       }
     });
     const orderedIds = cartItems.map(item => item.id);
