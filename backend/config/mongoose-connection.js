@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 const dbgr = require("debug")("development: mongoose") //here we can write anything
-const config = require("config");
+require("dotenv").config();
 
-const DB_URI = config.get("MONGODB_URI");
+const DB_URI = process.env.MONGODB_URI;
 
 mongoose
   .connect(`${DB_URI}/scatch`, {
