@@ -6,7 +6,7 @@ const authenticate = require("../middlewares/authMiddleware");
 
 router.post('/order', authenticate, async (req, res) => {
   try {
-    console.log("✅ Reached order route");
+    console.log("Reached order route");
     const user = req.user;
     console.log("User from token:", user);
 
@@ -21,7 +21,7 @@ router.post('/order', authenticate, async (req, res) => {
       };
     });
 
-    // ✅ Calculate total
+    // Calculate total
     const total = transformedItems.reduce((sum, item) => {
       return sum + (item.price || 0);
     }, 0);
@@ -29,7 +29,7 @@ router.post('/order', authenticate, async (req, res) => {
     const newOrder = new Order({
       userId: user.id,
       items: transformedItems,
-      total, // ✅ include total
+      total, // include total
     });
 
     await newOrder.save();

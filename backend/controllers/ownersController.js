@@ -40,12 +40,12 @@ module.exports.loginOwner = async (req, res) => {
 
     res.status(200).json({
       message: "Login successful",
-      token,  // ✅ Token needed for localStorage
+      token, 
       owner: {
         id: owner._id,
         fullname: owner.fullname,
         email: owner.email,
-        role: "admin"  // ✅ Very important for checking access
+        role: "admin" 
       }
     });
   } catch (err) {

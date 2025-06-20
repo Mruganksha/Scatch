@@ -11,13 +11,13 @@ const generateToken = (user) => {
 
 exports.registerUser = async (req, res) => {
   try {
-    console.log("🔔 Register request received:", req.body); // log request body
+    console.log("Register request received:", req.body); // log request body
     const { fullname, email, password } = req.body;
     console.log("  parsed:", { fullname, email, password });
 
     let user = await User.findOne({ email });
     if (user) {
-      console.log("❗ User already exists:", email);
+      console.log("User already exists:", email);
       return res.status(400).json({ message: "Email already exists" });
     }
 
@@ -27,10 +27,10 @@ exports.registerUser = async (req, res) => {
     const token = generateToken(user);
     res.cookie("token", token, { httpOnly: true });
     res.status(201).json({ message: "User registered", user: { email: user.email }, token, });
-    console.log("✅ Registration successful for:", email);
+    console.log("Registration successful for:", email);
 
   } catch (err) {
-    console.error("❌ Registration failed:", err);
+    console.error("Registration failed:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
@@ -54,10 +54,9 @@ exports.loginUser = async (req, res) => {
       sameSite: "Lax",
     });
 
-    // ✅ Add `token` in response JSON here!
     res.status(200).json({
       message: "Login successful",
-      token,  // <-- THIS was missing
+      token,  
       user: {
         id: user._id,
         fullname: user.fullname,

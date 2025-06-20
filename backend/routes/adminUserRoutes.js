@@ -57,7 +57,7 @@ router.put("/users/:id", verifyOwner, async (req, res) => {
 // Delete user
 router.delete("api/users/:id", verifyOwner, async (req, res) => {
   try {
-    // ✅ This will throw an error if req.user is not set
+    // This will throw an error if req.user is not set
     if (req.user.role !== "admin") {
       return res.status(403).json({ message: "Access denied" });
     }
