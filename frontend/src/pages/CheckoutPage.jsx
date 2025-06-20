@@ -9,7 +9,7 @@ import { removeItemsFromCart } from '../store/cartSlice';
 
 function CheckoutPage() {
   const cartItems = useSelector((state) => state.cart.items);
-  const user = useSelector((state) => state.auth?.user); // Safe access in case undefined
+  const user = useSelector((state) => state.auth?.user); 
   const dispatch = useDispatch();
 
   const [billingData, setBillingData] = useState({
@@ -69,7 +69,7 @@ function CheckoutPage() {
     };
     console.log("Token:", token);
 
-    const response = await axios.post("http://localhost:5000/api/order/order", orderData, {
+    const response = await axios.post(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/order/order`, orderData, {
       withCredentials: true,
       headers: {
         "Content-Type": "application/json",
@@ -173,7 +173,7 @@ dispatch(removeItemsFromCart(orderedIds));
         </div>
       </div>
       
-      {/* 🧊 Modal Section */}
+      {/* Modal Section */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg w-[90%] max-w-md text-center">

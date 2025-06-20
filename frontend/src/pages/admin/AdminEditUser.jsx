@@ -10,7 +10,7 @@ export default function AdminEditUser() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/users/${id}`, {
+        const response = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/users/${id}`, {
           method: "GET",
           credentials: "include", // Send cookie for auth
         });
@@ -49,7 +49,7 @@ export default function AdminEditUser() {
   }
 
   try {
-    const res = await fetch(`http://localhost:5000/api/users/${id}`, {
+    const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/users/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

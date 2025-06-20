@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "http://localhost:5000/api", // your Express backend URL
+  baseURL: `${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api`, // your Express backend URL
   withCredentials: true, // allow sending cookies for sessions
 });
 

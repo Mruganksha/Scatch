@@ -13,7 +13,7 @@ function AccountPage() {
     const fetchUser = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:5000/api/users/profile", {
+        const res = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/users/profile`, {
   headers: {
     Authorization: `Bearer ${token}`
   },
@@ -40,7 +40,7 @@ function AccountPage() {
   formData.append("profileImage", file);
 
     try {
-      const res = await axios.post("http://localhost:5000/api/users/upload-profile", formData, {
+      const res = await axios.post(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/users/upload-profile`, formData, {
   headers: {
     "Content-Type": "multipart/form-data",
     Authorization: `Bearer ${token}`
@@ -58,7 +58,7 @@ function AccountPage() {
   const handleAddressSave = async () => {
     try {
       const res = await axios.put(
-  "http://localhost:5000/api/users/update-address",
+  `${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/users/update-address`,
   { address },
   {
     headers: {
@@ -87,7 +87,7 @@ function AccountPage() {
             onClick={handleImageClick}
           >
             <img
-  src={user?.profileImage ? `http://localhost:5000/${user.profileImage}` : "default.jpg"}
+  src={user?.profileImage ? `${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/${user.profileImage}` : "default.jpg"}
   alt="Profile"
   className="w-full h-full object-cover"
 />

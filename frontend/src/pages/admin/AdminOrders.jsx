@@ -9,7 +9,7 @@ export default function AdminOrders() {
   const fetchOrders = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:5000/api/order/admin/orders", {
+      const res = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/order/admin/orders`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -73,7 +73,7 @@ export default function AdminOrders() {
     const newStatus = e.target.value;
     try {
       await axios.patch(
-  `http://localhost:5000/api/order/admin/orders/${order._id}/status`,
+  `${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/order/admin/orders/${order._id}/status`,
   { status: newStatus },
   {
     headers: {

@@ -25,8 +25,8 @@ function ShopPage() {
           bgcolor: '#FDE68A',
           panelcolor: '#1E293B',
           textcolor: '#FFFFFF',
-          isAvailable: true, // You can update this based on real data
-          hasDiscount: false, // You can update this too
+          isAvailable: true,
+          hasDiscount: false, 
           dateAdded: p.createdAt || '2024-06-01',
         }));
         setProducts(formatted);

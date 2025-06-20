@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeFromCart, incrementQuantity, decrementQuantity , } from '../store/cartSlice';
-import { useNavigate } from 'react-router-dom'; // ✅ import
+import { useNavigate } from 'react-router-dom'; 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Buffer } from 'buffer';
@@ -9,14 +9,14 @@ import { Buffer } from 'buffer';
 function CartPage() {
   const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // ✅ initialize
+  const navigate = useNavigate(); 
 
   const handleRemove = (id) => {
     dispatch(removeFromCart(id));
   };
 
   const handleCheckout = () => {
-    navigate('/checkout'); // ✅ redirect to checkout page
+    navigate('/checkout'); 
   };
 
   const totalAmount = cartItems.reduce(
@@ -124,7 +124,7 @@ function CartPage() {
               </div>
               <button
                 className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition"
-                onClick={handleCheckout} // ✅ button triggers navigation
+                onClick={handleCheckout} 
               >
                 Proceed to Checkout
               </button>
