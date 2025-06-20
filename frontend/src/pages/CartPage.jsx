@@ -4,6 +4,7 @@ import { removeFromCart, incrementQuantity, decrementQuantity , } from '../store
 import { useNavigate } from 'react-router-dom'; // ✅ import
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { Buffer } from 'buffer';
 
 function CartPage() {
   const cartItems = useSelector((state) => state.cart.items);
@@ -23,6 +24,27 @@ function CartPage() {
     0
   );
 
+  const convertImageBufferToBase64 = (buffer) => {
+  if (!buffer || buffer.length > 500000) {
+    console.warn("Skipping image conversion: buffer too large or undefined");
+    return null;
+  }
+
+  try {
+    const binary = Array.from(new Uint8Array(buffer), byte => String.fromCharCode(byte)).join('');
+    return `data:image/jpeg;base64,${btoa(binary)}`;
+  } catch (err) {
+    console.error("Image conversion error", err);
+    return null;
+  }
+};
+
+
+
+
+
+
+
   return (
     <>
       <Header />
@@ -36,23 +58,22 @@ function CartPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
             {/* Cart Items */}
             <div className="lg:col-span-2 space-y-6">
-              {cartItems.map((item) => (
+              {cartItems.map((item, index) => (
                 <div
-                  key={item.id}
+                  key={item.id || index}
                   className="bg-white rounded-xl shadow-sm p-5 flex items-center justify-between hover:shadow-md transition"
                 >
                   <div className="flex items-center gap-4">
-                    <img
-                      src={
-     item.image?.data
-    ? `data:image/jpeg;base64,${btoa(
-        String.fromCharCode(...new Uint8Array(item.image.data))
-      )}`
-    : item.image
+                   <img
+  src={
+    item.image?.data
+      ? convertImageBufferToBase64(item.image.data)
+      : item.image
   }
-                      alt={item.name}
-                      className="w-24 h-24 object-contain rounded-lg bg-gray-100"
-                    />
+  alt={item.name}
+  className="w-24 h-24 object-contain rounded-lg bg-gray-100"
+/>
+
                     <div>
                       <h3 className="text-lg font-semibold text-gray-800">{item.name}</h3>
                       <div className="flex items-center gap-3 mt-2">

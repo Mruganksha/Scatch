@@ -157,8 +157,8 @@ dispatch(removeItemsFromCart(orderedIds));
           <div className="bg-white p-6 rounded-xl shadow-md h-fit">
             <h2 className="text-xl font-semibold mb-4 text-gray-700">Order Summary</h2>
             <div className="space-y-4">
-              {cartItems.map((item) => (
-                <div key={item.id} className="flex justify-between text-sm text-gray-700">
+              {cartItems.map((item, index) => (
+                <div key={item.id || index} className="flex justify-between text-sm text-gray-700">
                   <span>{item.name} × {item.quantity}</span>
                   <span>₹ {item.price * item.quantity}</span>
                 </div>

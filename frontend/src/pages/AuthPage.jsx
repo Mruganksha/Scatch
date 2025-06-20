@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // ✅ import this
+import { useNavigate } from "react-router-dom"; 
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import axios from "../api/axios";
 
 function AuthPage() {
-  const navigate = useNavigate(); // ✅ used for redirecting
+  const navigate = useNavigate(); 
   const [error, setError] = useState("");
   const [registerForm, setRegisterForm] = useState({
     fullname: "",
@@ -20,7 +20,7 @@ function AuthPage() {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      console.log("📤 Sending registerForm:", registerForm);
+      console.log("Sending registerForm:", registerForm);
       await axios.post("/users/register", registerForm, {
         headers: { "Content-Type": "application/json" },
       });
@@ -28,7 +28,7 @@ function AuthPage() {
       setRegisterForm({ fullname: "", email: "", password: "" });
       setError("");
     } catch (err) {
-      console.error("❌ Registration error:", err.response?.data || err.message);
+      console.error("Registration error:", err.response?.data || err.message);
       setError(err.response?.data?.message || "Registration failed.");
     }
   };
@@ -36,7 +36,7 @@ function AuthPage() {
   const handleLogin = async (e) => {
   e.preventDefault();
   try {
-    const isAdmin = loginForm.email === "admin@example.com"; // You can improve this later
+    const isAdmin = loginForm.email === "admin@example.com"; 
     const endpoint = isAdmin ? "/owners/login" : "/users/login";
 
     const res = await axios.post(
@@ -48,13 +48,12 @@ function AuthPage() {
       }
     );
 
-    // ✅ Save token and role
     const { token, owner, user } = res.data;
 
     if (token) {
       localStorage.setItem("token", token);
       localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("role", isAdmin ? "owner" : "user"); // ✅ Correctly set role
+      localStorage.setItem("role", isAdmin ? "owner" : "user"); 
     }
 
     if (isAdmin) {
@@ -71,7 +70,7 @@ console.log("Role:", localStorage.getItem("role"));
     setLoginForm({ email: "", password: "" });
     setError("");
   } catch (err) {
-    console.error("❌ Login error:", err.response?.data || err.message);
+    console.error(" Login error:", err.response?.data || err.message);
     setError(err.response?.data?.message || "Login failed. Check credentials.");
   }
 };
@@ -88,9 +87,9 @@ console.log("Role:", localStorage.getItem("role"));
         </div>
       )}
 
-      <div className="w-full min-h-screen flex px-20">
+      <div className="w-full min-h-screen flex flex-col lg:flex-row px-6 md:px-12 lg:px-20 py-10 gap-10">
         {/* Registration Form */}
-        <div className="w-1/2 flex items-center justify-center">
+        <div className="w-full lg:w-1/2 flex items-center justify-center">
           <div className="w-full px-20">
             <h3 className="text-4xl mb-1">
               Welcome to <span className="text-blue-400 font-semibold">Scatch</span>
@@ -135,7 +134,7 @@ console.log("Role:", localStorage.getItem("role"));
         </div>
 
         {/* Login Form */}
-        <div className="w-1/2 flex items-center justify-center">
+        <div className="w-full lg:w-1/2 flex items-center justify-center">
           <div className="w-full px-20">
             <h4 className="text-2xl capitalize mb-5">Login to your account</h4>
             <form autoComplete="off" onSubmit={handleLogin}>

@@ -14,7 +14,7 @@ function HomePage() {
             Welcome to <span className="text-blue-500">Scatch</span>
           </h1>
           <p className="text-lg text-gray-600 max-w-xl mx-auto">
-            Build, share, and explore content seamlessly. Join the community and make your mark.
+            We bring together convenience, style, and unbeatable deals to elevate your shopping experience.
           </p>
 
           <div className="mt-10 flex flex-wrap justify-center gap-4">

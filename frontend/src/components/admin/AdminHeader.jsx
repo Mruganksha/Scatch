@@ -9,7 +9,7 @@ export default function AdminHeader() {
         {/* Future: notifications, search, etc. */}
         <div className="text-sm text-gray-600">admin@example.com</div>
         <img
-          src="https://via.placeholder.com/32"
+          src="https://placehold.co/32x32?text=Img"
           alt="Admin"
           className="w-8 h-8 rounded-full"
         />
