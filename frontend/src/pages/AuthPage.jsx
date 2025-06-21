@@ -34,6 +34,8 @@ function AuthPage() {
   };
 
   const handleLogin = async (e) => {
+    console.log("Backend base URL:", import.meta.env.VITE_REACT_APP_BACKEND_BASEURL);
+
   e.preventDefault();
   try {
     const isAdmin = loginForm.email === "admin@example.com"; 
@@ -159,6 +161,8 @@ console.log("Role:", localStorage.getItem("role"));
               {loginForm.email === "admin@example.com" && (
   <p className="text-sm text-blue-500 mb-2">Logging in as <strong>Admin</strong></p>
 )}
+
+
 
               <button
                 type="submit"
